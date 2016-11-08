@@ -1,0 +1,126 @@
+Method Overriding, Overloading, Hiding (for statics)
+DATA TYPE:
+	+ Primitive data type:
+		integer: byte(1B), short(2B), int(4B), long(8B)
+		floating point: float(4B), double(8B)
+		character: char(2B)   \u0000 -> \uffff
+		boolean: true or false
+	+ Reference data type (non primitive):
+		String
+		Integer, Double, Character, ...
+		Class obj...
+
+ENUM: special class -> a set of predefined constants, objects
+	Simple:
+			public enum Gender{ MALE, FEMALE, GAY, LESS, BI, UNKNOWN}
+	Complex:
+			public enum Planet{
+				SATURN  (5.688e+26, 6.0268e7),     // instance and its constructor
+			    URANUS  (8.686e+25, 2.5559e7),
+			    NEPTUNE (1.024e+26, 2.4746e7);
+
+				private final double mass;
+				private final double radius;
+				Planet(double mass, double radius){}     -> constructor, inherently private
+				// and many methods possible, including main method
+			}
+
+
+
+INTERFACE:
+	Define:		public interface MyInterface extends Inter1, InTer2, Inter3{
+					//constant declaration, implicitly public static final
+					double PI = 3.14;
+					// ABSTRACT method, implicitly public
+					void do(MyInterface other);
+					// STATIC and DEFAULT methods
+				}
+	Implement:
+				public class MyClass implements MyInterface{
+					public void do(MyInterface other){
+						MyClass other = (MyClass) other;
+						// do smt
+					}
+				}
+	Usefulness:
+		+ used as a Type: ArrayList<Interface> ...
+		+ provide CONTRACT to implement all ABSTRACT (non default, and non static) methods
+	Evolve:
+		+ Inheritance
+		+ Add default method
+					default void newCoreMethod(String s){}
+    Functional Interface: only one ABSTRACT method
+		+ to create an instance of an anonymous class: lambda expression
+
+
+
+INHERITATANCE  SubClass extends SuperClass, Interface extends SuperInterface
+
+	SubClass inherits all public package-private (when in the same package) and protected members (fields, methods, and nested classes BUT not CONSTRUCTOR)
+			of its SuperClass, indirect or direct.
+	For constructor and PRIVATE members, we need indirect access.
+
+	Can do:	
+		+ write class constructor that invokes its SupperClass's one explicitly or implicitly, in a chain all the way back to the constructor of Object
+				(constuctor chaining)
+		+ directly use inherited members
+		+ add more fields and methods
+		+ create same field -> HIDING
+		+ create same static method -> HIDING
+		+ create same instance method -> OVERRIDING (not applicable for FINAL method)
+		+ use SUPER keyword to access HIDEN fields, OVERRIDED instance method, and constructor
+
+	Casting: use object of one type in place of other type, or because method which can be called is defined through the variable type
+		+ implicit casting: (cast towards root)when object is known for its targeted type	Superclass var0 = new SubClass();  
+		+ excplicit casting: (cast awat from root) when object is not known for its targeted type 
+				if (obj instanceof MountainBike) {
+				    MountainBike myBike = (MountainBike) obj;   //throw runtime error
+				}
+	Overriding and Hiding method
+		 					Superclass Instance Method	Superclass Static Method
+			Subclass Instance Method	Overrides			Generates a compile-time error
+			Subclass Static Method		Generates a compile-time error	Hides
+
+			Interface method: 	default and abstract method 	-> overides
+						static method  			-> hide
+	Polymorphism: 	
+			one object can have many different type. It has available methods defined by all of its known types.
+			when a method is called: 	JVM call appropriate method for the obj refered to in each variable
+							Method is choosen based on the obj real type, not the one defined by the variable's type 
+
+		ABSTRACT CLASSES 				vs. 	INTERFACE
+Similarity	implementation(method and fields)			behaviour	
+Field type	any							public static final
+Class type	any							public
+Instantiate	NO							NO
+Class 		extends OneAbstractClass 				implements Many, Interface
+
+NESTED CLASSES
+		
+	Type: 
+		+ static class: bahave like toplevel class
+		+ non-static inner class (have direct access to enclosing class PRIVATE members)
+			+ normal class
+			+ anonymous class -> lambda expression as anonymous class implementing functional interface
+	Example:
+			class OuterClass {     // private or package private
+				...
+				static class StaticNestedClass {  // private, public, protected, package private
+					...							 //  behave SIMILARLY to top level class (OuterClass)
+												// OuterClass.StaticNestedClass nestedObject = new OuterClass.StaticNestedClass();
+				}
+				class InnerClass {        // private, public, protected, package private
+					...						// have access to all nested Class
+											// OuterClass.InnerClass innerObject = outerObject.new InnerClass();
+				}
+			}
+
+	Why:
+		+ Group a class that is used in one place, this class can access private member of outer class
+		+ Increase readability and maintainability
+
+
+Note: use a class as a HashMap key
+	+ equals method ->  TRUE when obj contents are similar (default: reference is similar)    -> equal method is used in contains method
+	+ hashCode method -> same int when obj contants are similar (default: reference is similar)
+	In order to distinguish objects with the same index, the key objects of the HashMap must have implemented the equals method
