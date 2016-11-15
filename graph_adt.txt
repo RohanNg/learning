@@ -1,0 +1,10 @@
+Basic obj: vertices, nodes
+        V
+Relationships btw obj: edges, arcs, links
+        E
+Undirected vs directive graph : depends on relationship, unidirectional or bidirectional
+
+
+Implementation:
+        adjacency matrix
+        adjacency list
