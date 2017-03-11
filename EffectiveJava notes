@@ -1,0 +1,58 @@
+EffectiveJava notes
+
+item 17: design and document for inheritance or else prohibit it
+	
+	DESIGN:
+		ELIMINATE seft-use of overridable methods entirely (with private helper methods) or DOCUMENT its
+			constructor must not invoke overridable methods
+		judiciously expose protected method that provide hooks to internal working 
+
+	TEST: write sub classes
+	
+	PROHIBIT SUBCLASSING (preferably for class implmenting interfaces): 
+		+ final class
+		+ private or package-private constructor + factory methods
+		=> use Wrapper Pattern for extending class functionalities
+
+item 18: Prefer interfaces to abstract class
+	
+	WHY interfaces or abstract class: a type that permit multiple implementations
+
+	WHY interfaces: 
+		Non-hierarchical type frameworks
+		Interface enables safe, powerful functionality enhancements (wrapper class idiom)
+
+	DESIGN Interface with utmost care as it's hard to change
+
+	EXCEPTION: when evolution is deemed more important than flexibility and power
+	
+	Conbine virtue of interfaces + abstract class => abstract skeletal implementation
+
+item 19: use interfaces only to define types
+	constant interface -> replaced by 
+		enum type
+		noninstantiable utility class
+
+item 20: use function objects to represent strategies:
+	
+	example: Comparator<T>
+
+	function objects: object with only one method, (use anonymous class syntax)
+
+	STRATEGY PATTERN:
+		declare an Interface to represent the strategy
+		a class implenments this interface for each concreate strategy
+
+		if concrete strategy 
+			used once: 	-> anonymous class
+			used often: -> export to static final field
+
+item 21: Favor static member classes over nonstatics
+	Nested class:
+		static member class 
+			commom use: public  :helpler class
+						private : represent component of the class (Map implentation with Entry component)
+		nonstatic member classes
+			common use: Adapter (like Iterator<T>)
+		anonymous class
+		local class

@@ -1,0 +1,22 @@
+Design Pattern
+
+Structural Design
+
+	Decorator: 
+
+		Decorator design pattern is used to modify the functionality of an object at runtime. At the same time other instances of the same class will not be affected by this, so individual object gets the modified behavior. 
+
+		http://www.journaldev.com/1540/decorator-design-pattern-in-java-example
+
+
+	Facade:
+		
+		Provide a unified interface to a set of interfaces in a subsystem. Facade Pattern defines a higher-level interface that makes the subsystem easier to use
+
+
+Behavioural Design pattern
+
+	Observer pattern or publish-subscribe pattern
+	
+		Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically
+

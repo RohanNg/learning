@@ -1,0 +1,234 @@
+Get an impression of me
+	aspiring student
+	can do attitude
+	smart, persistent and creative
+
+
+Kemira
+	innovative chemistry
+	The first choice in chemistry for water intensive industries.
+	the chemistry in here is not merely best chemicals in the industry
+	40 – 50 business IT projects annually
+
+
+Notes:
+Entity <> Table
+
+Association <> entity's reference to other entity <> foreign key relationships
+
+Unidirectional vs Bidirectional association
+
+A < association>  B
+
+Only one end should manages, or owns the association.
+
+
+Method:
+
+>> SAVING
+
+public Serializable save(Object object) throws HibernateException
+
+Call session.save(object) more than one time does not have any effect. Because after the first time the object is save, it's in persistence state. 
+
+Sake an object 
+Save by creating a new row in the database!
+Save a detached object will create new row !
+
+// instead
+saveOrUpdate()
+
+// you should load object in the first place and then update the persistent (loaded) objects
+
+
+>> LOADING (advanced: LockMode)
+
+// get an object with specified id
+// return null is not found
+public
+ <T> T get(Class<T> clazz, Serializable id)
+
+// same, throws exceptions if not found
+public <T> T load(Class<T> theClass, Serializable id)
+
+Compare object from diffrent session -> equals() and hashCode()
+
+// Others way:
+query, Criteria API
+
+>> UPDATING
+
+>> DELETING
+
+// persistence object as param
+// or transient object with correct id
+// cascade possible
+public void delete(object)
+
+// Bulk delete (no cascade operation), better performance
+session.createQuery("delete from User").executeUpdate()
+
+
+>> MERGING
+(have a detached entity possibly updated, changed to persistent state again)
+
+Object merge(Object object)
+
+>> REFRESH
+
+// inverse of merge
+public void refresh(Object object)
+
+>>>>> CASCADING ops
+ certain persistence operations on one entity to also be applied to the entity that it is linked to
+
+Merge has intelligence. It has lot of pre-checks before it go actual merge(if required)
+
+if Object is transient, It simply fires INSERT query makes object persistent(attached to session)
+if Object is detached, fires select query to check whether data modified or not if modified, fires UPDATE query otherwise just ignore merge task.
+where as session.update
+
+throws exception if object is transient.
+if Object is detached, it simply fires UPDATE query irrespective of data changes to object.
+session.merge is expensive than update
+
+
+
+	Annotation
+
+
+	@Entity [("name")]
+		@Table(name =  "TABLE")
+		// custum table name
+		@SecondaryTable(name = "2ndTABLE") 
+		// if entity bean is persisted accross several table
+
+	@Id
+	@GeneratedValue=(strategy=GenerationType.AUTO)
+		//strategy[SEQUENCE, AUTO, IDENTITY, TABLE]
+
+	//optional : can be null?
+
+	@Basic [(fetch="EAGER", optional="true")] 
+	// for basic type, overriding behav
+
+
+	@Column(nullable, unique, length, name="column_name", precision, updatable)
+	// override default behaviors
+
+	@Transient
+	// instance vars to be ignored
+
+
+
+
+
+
+
+>>> Association mapping
+	
+	in bidirectional, mappedBy in owned (inverse) side must be specified, with the value being the attribute in the owning side. The owning side table will have fk field. 
+
+
+	One-to-one - component strategy (1 table)
+		@Embeddable
+		public class A {}
+		
+		@Embedded
+		@AttributeOverrides({...})
+		private A a;
+
+	One-to-One - (2 table) convertable to 1-M
+
+		@OneToOne(cascade, fetch, optional, orphanRemoval, mappedBy)
+
+		bidirectional 	
+		the owned side need to used `mappedBy` 
+		the owning side contains the fk
+
+
+	ManyToOne, OneToMany (2 table)
+
+		// bidirectional case
+		public class Publisher {
+			// preferred
+			@OneToMany(cascade = ALL, mappedBy = "publisher"
+			//@OrderBy("name ASC")
+			List<Book> books;
+		}
+		// Book table maintains fk of Publisher
+		Public class Book {
+			@ManyToOne
+			@JoinColumn(name = "publisher_id")	
+			Publisher publisher
+		}
+
+		// unidirectional case
+		
+		public class Publisher {
+			@OneToMany(cascade = ALL)
+			List<Book> books;
+		}
+
+		||
+
+		public class Book {
+			@ManyToOne //use cascade here -> no?
+			Publisher publisher;
+		}
+
+
+	ManyToOne, OneToMany (2 table + link_table)
+
+		@OneToMany(cascade = ALL)
+		@JoinTable(
+			name="PublishedBooks",
+			joinColumns = { @JoinColumn( name = "publisher_id") },
+			inverseJoinColumns = @JoinColumn( name = "book_id")
+		)
+		Set<Book> books;
+
+
+	ManyToMany (with a link table)
+
+		@ManyToMany(cascade, fetch, mappedBy)
+
+
+		// bidirectional, mappedBy a is must
+		class Book {
+			@ManyToMany(cascade = ALL)
+			@JoinTable(
+				name="Books_to_Author",
+				joinColumns={@JoinColumn(name="book_ident")},
+				inverseJoinColumns={@JoinColumn(name="author_ident")}
+			)
+			Set<Author> authors;
+		}
+
+		class Author {
+			@ManyToMany(mappedBy = "authors")
+			Set<Book> books;
+		}
+
+
+Inheritance:
+	@Inheritance(strategy = TABLE_PER_CLASS)
+	class Book {}
+
+	class EBook extends Book {}
+
+
+
+Temporal data : use java.util.Date, mapped to TIMESTAMP
+
+
+
+
+Query<T> qr = session.createQuery(" ", T.class)
+qr.list
+qr.uniqueResult() (exception use setMaxResults(1), null)
+
+int row_affected = qr.executeUpdate() // UPDATE, DELETE
+
+
+

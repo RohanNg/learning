@@ -1,0 +1,225 @@
+1. MVC means
+
+    SOFTWARE DESIGN PATTERN for developing application
+
+        Separates apps into three main logical components:
+            Model       : maintaining, managing data
+            View        : presenting information
+            Controller  : Software Code that controls the interactions between the Model and View
+
+        Interactions (vary in different implementation):
+            Model       : store data, respond to commands from controller
+            View        : present information to user
+            Coltroller  : Software Code that controls the interactions between the Model and View
+
+    Most web frameworks are based on the MVC pattern
+    Why:     separation of concerns, testibility, reuseability, suitable for large-scale apps
+
+            Early state : M,V,C are entirely in server
+                client send hyperlink requests or form input to the controllers and receive the complete and updated web page from the view
+            Matured     : MVC is executed partly on client
+
+2. Platform as a Service: PssA
+
+    is cloud computing service that
+
+    allows customers to develope, run, manage applications
+        without the complexity of maintaining the infrastructures.
+
+3. Git:
+
+    What:   Distributed version control systems (management system of changes)
+            Use for software development and other version control tasks
+            Replace contralized version control system
+
+
+
+    Why:    Version control system based on snapshots not differences
+
+            Speed (nearly every operation is local), Data integrity (everything is check-summed)
+
+            Branching workflow as audition for changes. Cheap, easy to merge. Ensure master branch contain produciton quality code.
+
+            Distributed development: each developer gets their own local repos, complete with a full history of commits
+
+            Lcoal repository can be merged with remote repository.
+
+
+    Git object:
+
+        Git directory (.git)        : store metadata and object database(snapshot or content of a file in its history)
+
+        Working directory           : single checkout of one version (each commit create a version) of the project
+                                        Pulled out of compressed database, placed on disk, ready to be modified.
+        Staging area (INDEX)        : a file (found in git directory), snapshot of the working directory for the next commit
+
+    Git three states:
+        Committed   :  .git
+        Modified    :  working irectory
+        Staged      :  index
+
+    CHECKOUT BRANCH process (same as cloning branch):
+        change HEAD --ref---> checked-out branch  --ref---> last commits
+        populate Index with the snapshot of the last commit
+        copy the contents of the index to the working directory
+
+    Git three tree
+        HEAD        last-commit snappshot   ---ref--> to the current branch
+                                            --ref--> last commit on that branch
+                                            --ref--> last  commit on that branch
+        INDEX       proposed next commit snapsshot
+                    initially populated with file content for the working directory to be compared to
+        WORKING DIR sanbox
+
+    Reset : move where the current branch's HEAD point to
+        1. move th branch HEAD point to (stop there if --soft)
+        2. (default stop) update INDEX look like HEAD (stop there unless --hard)
+        3. update working dir look like HEAD
+
+    Checkout : move the HEAD itself to point the the other branch
+
+    // https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified#_git_reset
+
+5. Git - what folking means?
+    Fork can mean producing a personal copy of someone else’s project, by creating a clone on the server side. You can contribute to other's project and submit a pull request to ask them to merge your work.
+
+    Fork can mean creating a new branch, which is a pointer to the same commit we are currently on
+        commmits on the newly created branch help diverge the project, which can be merged later with other branches.
+
+6. Local repo vs Remote repo
+
+    Local repo, typically owned by you on your computer, is repository in which you can change by commiting changes that have been added to staging area, among all other things you can do with git.
+
+    Remote repo, which is typically found on the server, on the cloud, either belong to you or others, is the repository that you can interact with from your local repo by pull, fetch, push.
+
+
+7. HTML Hypertext markup language
+8. HTML5 new feature
+
+    New doctype declaration
+    Multimedia elements : <audio> <video>
+    Graphic elements    : <svg> <canvas>
+    Semantic elements   : <article> <figure> <header> <footer> <nav> <summary> <section> <main> <figcaption>
+    APIS                : web Workers, Geolocations, Drag/Drop, Local Storage, Application Cache
+9. Why css file
+    Code reuse
+    Separation of concerns
+10. Bootstrap
+    Bootstrap is the most popular HTML, CSS, and JavaScript framework for developing responsive, mobile-first web sites.
+15. DOM
+    It's an API that connects web pages to programming languages.
+    When the page is loaded, DOM of the page is constructed.
+    It provides a structured representation of the document as a tree. The DOM defines method that allow access to the tree, so that programming languages can change the document structure, style and content.
+
+16. Typical feature of Javascript:
+    - object oriented scripting languages
+    - dynamic typing, weakly typed
+    - FIRST CLASS FUNCTION with closures
+    - prototype based
+    - function based scoping
+
+17.         Javascript                vs            Java
+            OOS (object oriented scripting)         OOP (opject oriented programmning)
+            Browser                                 Browser, virtual machine
+            interpretted, Executed on the fly       Complied
+            Dynamic typing, weakly typed            Static typing, strongly typed
+            Prototype based                         Class based
+            Function based scoping                  Block based scoping
+            Write for different Browser             Write once, run everywhere
+            == ??
+
+
+
+
+
+
+22.             JSON                        vs                     XML
+Best            data exchange format                               Document exchange format
+structure       arrays and records                                 elements (can be nested),attributes,...
+Processing              Easier, faster to process as it have light weight syntax that
+                        describe data structue native to many programming language
+syntax          short, simple, concise                             long, verbose, end tags
+
+Same:   seft-describing, hierarchial data
+        can be delivered by XMLHttpRequest objects
+
+XML:
+
+
+
+
+30. Test driven development: software development process characterized by repetition of develoment cycle
+    why:    avoid bug when pushing forwards the functionality
+    what: LOOP
+        1. Add a test
+        2. Watch it fails
+        3. Write the code
+        4. Run the test til success
+        5. Refactor code
+
+31. Jasmine: behavior-driven development framework for testing JavaScript code
+
+
+
+
+Javascript closure, object, prototype, modules
+
+    Prototype property:
+        Machanism by which JS objs inherits features from one another, and it works differently to inheritance machanisms in classical oop.
+
+        IS A PROPERTY CONTAINING AN OBJECT on which you define members that you want to be inherited
+
+        Each object has internal link to another object called its prototype. That prototyppe obj has a prototype of its own, and so on until an object is reached with null as its protoype. Null have no prototype, acts as the final link in this prototype chain.
+
+        In classic OOP, classes are defined, then when object instances are created all the properties and methods defined on the class are copied over to the instance. In JavaScript, they are not copied over — instead, a link is made between the object instance and its constructor (a link in the prototype chain), and the properties and methods are found in the constructor by walking up the chain.
+
+        Inheriting properties: properties are seached down the prototype chaines, until the end is reached.
+
+        inheriting methods: any function can be added to obj in the form of property. An inherited function acys as any other property.
+
+
+    Constructor property:
+         Every object instance has constructor property, which point to the original constructor function that created the instance
+
+    Different way to create objects, and the resulting prototype chain
+
+        // prevalent
+        OBJECT LITERAL
+            var o = {a:1};
+                0 --> Object.prototype --> null
+
+            var a = ["a","b","c"];
+                a --> Array.prototype --> Object.prototype --> null
+
+            function f(){
+                return 'f';
+            }
+                f --> Function.prototype --> Object.prototype --> null
+
+        CONSTRUCTOR (a function that happens to be called with the new operator)
+            // pattern for createing an obj with method and properties
+            //property def
+            function Graph(){
+                this.vertices =[];
+                this.edges = [];
+            }
+            //first method
+            Graph.prototype.addvertex = function() {
+                this.vertices.push(v);
+            }
+            //second method
+            Graph.protorype.secondMethod = function() {
+
+            }
+
+        Object.create
+            var a ={a:1}
+            var b = Object.create(a);
+            b --> a --> Object.prototype --> null
+
+    Why objects with constructor? Ultimately, objects are just another form of code reuse, like functions or loops, with their own specific roles and advantages. If you find yourself creating a bunch of related variables and functions and want to track them all together and package them neatly, an object is a good idea. Objects are also very useful when you want to pass a collection of data from one place to another. Both of these things can be achieved without use of constructors or inheritance. If you only need A SINGLE instance of an object, then you are probably better off just using an object literal, and you certainly don't need inheritance. If you need multiple instance of an object, then use Constructor.
+
+    Why iheritance ? In terms of using inheritance in your own code, you probably won't use it that often, especially to begin with, and in small projects — it is a waste of time to use objects and inheritance just for the sake of it, when you don't need them. But as your code bases get larger, you are more likely to find a need for it. If you find yourself starting to create a number of objects that have similar features, then creating a generic object type to contain all the shared functionality and inheriting those features in more specialized object types can be convenient and useful.
+
+
+

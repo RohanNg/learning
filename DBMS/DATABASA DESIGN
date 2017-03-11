@@ -1,0 +1,180 @@
+SQL
+        special-purpose, domain-specific languages
+        for managing data in RDBSM or stream processing in RDSMS
+
+        Subset
+                DDL: data def lang manages table and index structure
+                DML: data manipulation lang used manipulate amd interact with data
+                DCL: data control lang authorizes users to access and manipulae date
+
+
+                DATABSE LIFE
+Phase 1: Analysis
+        Identify entities and attributes
+Phase 2: SCHEMA DESIGN  (based on DATA)
+        conceptual design (what entities, what relationships)
+                Design entities, attributes, key, and relationships
+        logical (what table, what constrains)
+                Break many to many relationship
+                Normalizing table
+                Integrity Contrains
+        physical design
+                SQL code
+Phase 3: Implementation
+        Install the DBMS.
+        Tune the setup variables according to the hardware, software and usage conditions.
+        Create the database and tables.
+        Load the data.
+        Set up the users and security.
+        Implement the backup regime.
+Phase 4: Testing iteratively
+        Test the performance
+        Test the security
+        Test the data integrity
+        Fine-tune the parameters or modify the logical or physical designs in response to the tests.
+Phase 5: Operation
+        Hand over operation of the database to the users.
+        Make any final changes based on the problems discovered by users.
+Phase 6: Maintenance
+        Maintain the indexes
+        Maintain the tables
+        Maintain the users
+        Change passwords
+        Backup
+        Restore backups
+        Change the design to meet new requirements
+Phase 6: End of life
+        The maintenance of the existing database begins to drain more and more resources,
+        and the effort to create a new design is matched by the current maintenance effort.
+        As this point, the database is coming to the end of its life,
+        and a new project begins life in the Analysis phase.
+
+
+
+                NORMALIZATION
+
+Normalization is just a helpful set of steps that most often produces an efficient table structure, and not a rule for database design.
+
+Why:
+        Increase data integrity
+        Eliminate data redundancies (and therefore use less space)
+        Make it easier to make changes to data, and avoid anomalies when doing so
+        Make referential integrity constraints easier to enforce
+        Produce an easily comprehensible structure that closely resembles the situation the data represents, and allows for growth
+1st NF:
+        ensure no repeating groups (each row and column intersection contains unique value)
+        define primary keys
+        principle of ATOMICITY: all columns must be indivisible
+2nd NF:
+        in 1st NF
+        ensure no partial dependencies (where an attribute is only dependent on part of a primary key)
+        OTHER WORD
+        ensure every attribute is functionally dependent of the whole key
+        -> remove partially dependent fields
+3rd NF:
+        in 2nd NF
+        ensure no transitive dependencies (no non-key attribute dependence on other non-key attributes)
+        OTHER WORD
+        ensure every attibutes is functionally dependent of the whole key ONLY
+Boyce-Codd normal form:
+        in 3rd NF
+        each determinant is a candidate key
+                (determinant: attribute that determines value of other attribute)
+                (candidate key: the key to uniquely identify a record)
+4th NF:
+        in Boyce-Codd NF
+        does not contains multiple (>1) multivalued dependency
+                (multivalued dependency: one value of this attribute is associated with >=1 value of that attribute)
+5th NF: (problems rarely exist)
+
+        NOTE: the more tables you have, the more joins you need to do, which slows the system down.
+        NOTE: de-normalization: trade data integrity for performance
+
+
+        IMPROVE PERFORMANCE AND INTEGRITY
+
+INDEXING
+        Purpose
+                ensure uniqueness of columns (or combination of columns)        : UNIQUE INDEX
+                speed up queries                                                : INDEX
+ 
+        Why:    
+                Entire data structure cannot be stored in main memory. Instead ,data is stored on disk based storage devices as blocks of data, which is accessed in their entirety.
+
+                Disk accesses is time-consumimg. It's worth to executing lots of instruction to access the right disk block.
+
+                Index is a special data structure in database tables, typically hold the filed value and a pointer to the record realated. Data contained in the index are in a logically sorted manner, which will help speed up query: browsing through all the rows of a table can be avoided
+
+        Cost:
+                Require space on disk in memory buffer
+                Maintaining update during INSERT, DELETE, UPDATE
+                Query optimizer work harder
+
+        Gain:
+                Right index speed up queries
+                Most work are read heavy, net benefit outweights costs of maintainging index for write operation
+                Index are compact -> efficient use of memory
+
+        Index choice based on QUERIES
+                what COLUMNS, TABLE is needed
+                what JOINs to be performed
+                what GRUOP BY, ORDER BY is needed  -> for **
+
+        Design index:
+                order of columns matters
+                rate index using star system
+                        *  rows referenced are gruoped in the index
+                        ** rows referenced are orderd in the index the way you want
+                        *** index contains * columns referened by ur query
+                drop unused index
+                revisiting index regularly
+
+        What query: slow query log -> queries digest tool
+
+        Mistakes:
+                Index every column
+                Not index at all
+
+
+        Limit of 1D index
+                data is sorted on only one attribute
+                queries on multiple dimension might need disk access for each record
+
+        Multidimentional indexing
+                Why:    
+                        data contains many attribute, meaning it exists in high dimentional space 
+                        strong need for searching data according to many attibutes
+                        the need to sort data based on multiple attribute
+                
+                Multidimential database uses the idea of data cube to represent the dimensions of data, where attributes are seen as dimensions. For example, "sales" could be viewed in the dimensions of product model, geography, time, or some additional dimension
+                
+
+                Multidimensional index structure:
+                        Hash-table-like approaches with partitioned hash function
+
+                        Tree-like approaches: R tree, quad tree, B+ tree
+
+
+                Application: range queries, nearest neighbor, partial match queries 
+
+        R tree idea:
+                captures the spirit of B tree for multidimentional data
+                
+                data is divided into region
+
+                represents a collection of regions by gruoping them into a hierarchy of larger regions
+
+                Interior node correspond to interior region
+                        region can be of any shape 
+                        childen correspond to sub-regions
+
+        B tree idea:
+                self-balancing tree data structure that keep data sorted that allows searches, sequential access, insertions and eletions in logolorithmic time.
+                In database, B-tree is an indexing technique optimized for disk based storage systems. 
+                B-tree is a generalization of binary search tree in that a node can have more than two children.
+
+INTEGRITY CONSTRAIN
+        PRIMARY KEY, a non null value
+        DOMAIN CONSTRAIN: data type, range, null?
+        REFERENCE INTEGRITY ON DELETE CASCADE / SET NULL
+

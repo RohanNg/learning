@@ -1,0 +1,358 @@
+<!Doctype html>
+<body>
+    <pre>
+        Javascript closure, object, prototype, modules
+
+    Prototype property:
+        Machanism by which JS objs inherits features from one another, and it works differently to inheritance machanisms in classical oop.
+
+        IS A PROPERTY CONTAINING AN OBJECT on which you define members that you want to be inherited
+
+        Each object has internal link to another object called its prototype. That prototyppe obj has a prototype of its own, and so on until an object is reached with null as its protoype. Null have no prototype, acts as the final link in this prototype chain.
+
+        In classic OOP, classes are defined, then when object instances are created all the properties and methods defined on the class are copied over to the instance. In JavaScript, they are not copied over — instead, a link is made between the object instance and its constructor (a link in the prototype chain), and the properties and methods are found in the constructor by walking up the chain.
+
+        Inheriting properties: properties are seached down the prototype chaines, until the end is reached.
+
+        inheriting methods: any function can be added to obj in the form of property. An inherited function acys as any other property.
+
+
+    Constructor property:
+         Every object instance has constructor property, which point to the original constructor function that created the instance
+
+    Different way to create objects, and the resulting prototype chain
+
+        // prevalent
+        OBJECT LITERAL
+            var o = {a:1};
+                0 --> Object.prototype --> null
+
+            var a = ["a","b","c"];
+                a --> Array.prototype --> Object.prototype --> null
+
+            function f(){
+                return 'f';
+            }
+                f --> Function.prototype --> Object.prototype --> null
+
+        CONSTRUCTOR (a function that happens to be called with the new operator)
+            // pattern for createing an obj with method and properties
+            //property def
+            function Graph(){
+                this.vertices =[];
+                this.edges = [];
+            }
+            //first method
+            Graph.prototype.addvertex = function() {
+                this.vertices.push(v);
+            }
+            //second method
+            Graph.protorype.secondMethod = function() {
+
+            }
+
+        Object.create
+            var a ={a:1}
+            var b = Object.create(a);
+            b --> a --> Object.prototype --> null
+
+    Why objects with constructor? Ultimately, objects are just another form of code reuse, like functions or loops, with their own specific roles and advantages. If you find yourself creating a bunch of related variables and functions and want to track them all together and package them neatly, an object is a good idea. Objects are also very useful when you want to pass a collection of data from one place to another. Both of these things can be achieved without use of constructors or inheritance. If you only need A SINGLE instance of an object, then you are probably better off just using an object literal, and you certainly don't need inheritance. If you need multiple instance of an object, then use Constructor.
+
+    Why iheritance ? In terms of using inheritance in your own code, you probably won't use it that often, especially to begin with, and in small projects — it is a waste of time to use objects and inheritance just for the sake of it, when you don't need them. But as your code bases get larger, you are more likely to find a need for it. If you find yourself starting to create a number of objects that have similar features, then creating a generic object type to contain all the shared functionality and inheriting those features in more specialized object types can be convenient and useful.
+
+    </pre>
+    <script type="text/javascript">
+
+        /////////////////////
+        // LEXICAL SCOPING //
+        /////////////////////
+        // scope of a variable is defined by its location within the source code and
+        // nested functions have access to variables decleared in their outer scope
+        function init() {
+          var name = "Mozilla"; // name is a local variable created by init
+          function displayName() { // displayName() is the inner function, a closure
+            alert(name); // use variable declared in the parent function
+          }
+          displayName();
+        }
+        init();
+
+
+
+        /////////////
+        // CLOSURE //
+        /////////////
+        // an inner function that has access to the outer, enclosing functions's members
+        //
+        // special kind of object that combines two things
+        //      a function
+        //      the environment in which that function was created
+        //
+        // how to create
+        //      create a function that return its inner functions
+        //      the returned inner function is a closure
+        //
+        // Why CLOSURE:
+        //      Emulate object with private method and fields
+        //      Preserve name space
+        //      Create a function factory
+        //
+        // CLOSURE can be thought of as an OBJECT WITH SINGLE METHOD, so that you can use it like a FUNCTION
+
+        function makeFunc() {
+          var name = "Mozilla";
+          function displayName() {
+            alert(name);
+          }
+          return displayName;
+        }
+
+        var myFunc = makeFunc();  // myFunc became a CLOSURE
+        myFunc(); // WHAT THE FUCK IS THIS, A FUNCTION?
+
+
+
+        // More interesting example
+        //////////////////////
+        // function factory //
+        //////////////////////
+        function makeAdder(x) {
+          return function(y) {
+            return x + y;
+          };
+        }
+
+        var add5 = makeAdder(5);
+        var add10 = makeAdder(10);
+
+        console.log(add5(2));  // 7
+        console.log(add10(2)); // 12
+
+        /////////////////////////////
+        // EMULLATE PRIVATE METHOD //
+        /////////////////////////////
+        // MODULE PATTERN //
+        ////////////////////
+        // create an anonymous function that return an object, and call the function immidiately after it's created
+        var counter = (function() {
+          var privateCounter = 0;
+          function changeBy(val) {
+            privateCounter += val;
+          }
+          // return three closure
+          return {
+            increment: function() {
+              changeBy(1);
+            },
+            decrement: function() {
+              changeBy(-1);
+            },
+            value: function() {
+              return privateCounter;
+            }
+          };
+        })();
+
+        // this function can be stored to be reused
+        var makeCounter = function() {
+          var privateCounter = 0;
+          function changeBy(val) {
+            privateCounter += val;
+          }
+          return {
+            increment: function() {
+              changeBy(1);
+            },
+            decrement: function() {
+              changeBy(-1);
+            },
+            value: function() {
+              return privateCounter;
+            }
+          }
+        };
+
+        ///////////////////////////////
+        // PERFORMANCE CONSIDERATION //
+        ///////////////////////////////
+        // When creating an obj, method should be associated with the prototype
+        //
+        // Why: If method is associated with the prototype,
+        //      when the constructor is called, the methods would be linked to the method on constructor.prototype rather than
+        //      getting reassigned for every obj creation if the constructor contains methods
+        //      -> affect speed
+        //
+        //      Method inside constructor is a closure
+        //      -> affect memrory
+        function MyObjectV1(name, message) {
+          this.name = name.toString();
+          this.message = message.toString();
+          this.getName = function() {
+            return this.name;
+          };
+
+          this.getMessage = function() {
+            return this.message;
+          };
+        }
+
+        // Rewdefining constructor work, but it's not encouraged
+        function MyObjectV2(name, message) {
+          this.name = name.toString();
+          this.message = message.toString();
+        }
+        MyObject.prototype = {
+          getName: function() {
+            return this.name;
+          },
+          getMessage: function() {
+            return this.message;
+          }
+        };
+
+
+        //////////////////////////////////
+        // Append to existing prototype //
+        //////////////////////////////////
+        function MyObjectV3(name, message) {
+          this.name = name.toString();
+          this.message = message.toString();
+        }
+        MyObject.prototype.getName = function() {
+          return this.name;
+        };
+        MyObject.prototype.getMessage = function() {
+          return this.message;
+        };
+
+        // Cleaner way with the same result
+        function MyObjectV4(name, message) {
+            this.name = name.toString();
+            this.message = message.toString();
+        }
+
+        (function() {
+            this.getName = function() {
+                return this.name;
+            };
+            this.getMessage = function() {
+                return this.message;
+            };
+        }).call(MyObjectV4.prototype);
+
+        //////////////////////////////////////
+        //ONE WAY TO IMPLEMENT INHERITANCE  //
+        //////////////////////////////////////
+        function Person(first, last, age, gender, interests) {
+            this.name = {
+                first,
+                last
+            };
+            this.age = age;
+            this.gender = gender;
+            this.interests = interests;
+        };
+
+      Person.prototype.bio = function() {
+        // First define a string, and make it equal to the part of
+        // the bio that we know will always be the same.
+        var string = this.name.first + ' ' + this.name.last + ' is ' + this.age + ' years old. ';
+        // define a variable that will contain the pronoun part of
+        // the sencond sentence
+        var pronoun;
+
+        // check what the value of gender is, and set pronoun
+        // to an appropriate value in each case
+        if(this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === 'M') {
+          pronoun = 'He likes ';
+        } else if(this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') {
+          pronoun = 'She likes ';
+        } else {
+          pronoun = 'They like ';
+        }
+
+        // add the pronoun string on to the end of the main string
+        string += pronoun;
+        // use another conditional to structure the last part of the
+        // second sentence depending on whether the number of interests
+        // is 1, 2, or 3
+        if(this.interests.length === 1) {
+          string += this.interests[0] + '.';
+        } else if(this.interests.length === 2) {
+          string += this.interests[0] + ' and ' + this.interests[1] + '.';
+        } else {
+          // if there are more than 2 interests, we loop through them
+          // all, adding each one to the main string followed by a comma,
+          // except for the last one, which needs an and & a full stop
+          for(var i = 0; i < this.interests.length; i++) {
+            if(i === this.interests.length - 1) {
+              string += 'and ' + this.interests[i] + '.';
+            } else {
+              string += this.interests[i] + ', ';
+            }
+          }
+        }
+        // finally, with the string built, we alert() it
+        alert(string);
+      };
+
+      Person.prototype.greeting = function() {
+        alert('Hi! I\'m ' + this.name.first + '.');
+      };
+
+      Person.prototype.farewell = function() {
+        alert(this.name.first + ' has left the building. Bye for now!');
+      }
+
+
+      /////////////////////////////
+      // Teacher inherits Person //
+      /////////////////////////////
+      function Teacher(first, last, age, gender, interests, subject) {
+        Person.call(this, first, last, age, gender, interests);
+        // function.call() call the function defined somewhere else, but in the current context this
+        // it's like creating attribute for teacher by borrowing the code from Person rather than copy and paste it
+        this.subject = subject;
+      }
+
+
+      Teacher.prototype = Object.create(Person.prototype);
+      // create() create a new object equal to the specified obj
+      // Prototype is a property containing an object on which you define members that you want to be inherited
+      // teacher now has all method available on Person.prototype
+
+      Teacher.prototype.constructor = Teacher;
+      // do this to avoid some problems ??
+      // safety, recommended
+
+      // override method
+      Teacher.prototype.greeting = function(){
+          var prefix;
+
+        if(this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === 'M') {
+          prefix = 'Mr.';
+        } else if(this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') {
+          prefix = 'Mrs.';
+        } else {
+          prefix = 'Mx.';
+        }
+
+        alert( 'Hello. My name is ' + prefix + ' ' + this.name.last + ', and I teach ' + this.subject + '.');
+      };
+
+      Teacher.prototype.preach = function(){
+        console.log('Today topic is Recursive Newral net .... blablabla');
+        console.log('Today topic is Recursive Newral net .... blablabla');
+      };
+
+      ////////////////////
+      // Initialize obj //
+      ////////////////////
+      var teacher1 = new Teacher('Hai Dang', 'Nguyen', 20, 'male', ['swimming','photography','glrorithms'], 'machine learning');
+
+
+      var person1 = new Person('Tammi', 'Smith', 17, 'female', ['music', 'skiing', 'kickboxing']);
+
+
+    </script>
+</body>

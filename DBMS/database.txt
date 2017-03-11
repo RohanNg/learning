@@ -1,0 +1,23 @@
+//ref: http://hsqldb.org/doc/guide/sessions-chapt.html
+SESSIONS and TRANSACTIONS
+
+Session:
+
+All sql statement is executed in sessions, started when a onnection to database is established.
+
+SQL statement : transactional statement
+Non stransactional statement: SET keyword -> change properties of session
+
+Session attributes: descibe current mode of operation
+Session variables: user-defined for stored procedures and functions
+Session table:
+
+TRANSACTION AND CONCURRENCY CONTROL
+
+Concurrency control models: 2PL, MVCC (multiversion concurrency control), MVLOCKS (hybrid)
+
+4 standard level of transaction isolation: READ_UNCOMMITTED, READ_COMMMITTED, REPEATABLE_READ, SERIALIZABLE
+
+LOCK:
+    exclusive lock: write lock
+    shared, inclusive lock: read lock

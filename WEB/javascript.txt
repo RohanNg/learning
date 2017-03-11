@@ -1,0 +1,18 @@
+article: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+
+closure - like a environment
+
+        why: data hiding, encapsulation (properties associated with OOP)
+
+        what: associate some data (the environment) with a function that operates on that data
+
+        example:
+                function makeAdder(x) {
+                  return function(y) {
+                    return x + y;
+                  };
+                }
+
+module pattern: anonymous closure
+
+Every object has a __proto__ object property (except Object); every function has a prototype object property

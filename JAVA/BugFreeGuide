@@ -1,0 +1,308 @@
+2. Good code:
+        Don't Repeat Yourself (DRY)
+        Comments where needed
+        Fail fast
+        Avoid magic numbers
+        One purpose for each variable
+        Use good names
+        No global variables
+        Return results, don't print them
+        Use whitespace for readability
+
+3. TESTING (Document test strategy in test class)
+        Test-first programming -> write tests before you write code
+
+        Black box testings           -> choosing test cases systematically
+                                            -> PARTITIONING BOUNDARIES of input output spaces and
+
+        White box testing            -> evaluate statement coverage (statement coverage, branch coverage, path coverage)
+
+        Unit test (isolation test)
+
+        Integration test (combination test for connection between units)
+
+        Regression testing for future change of code (test suit includes past inputs that elicited bugs)
+            -> test-first debugging (bug arises -> write test case -> add to test suit)
+
+        TOOL: Automated testing framework (JUnit) using set of test cases that you design and collect (automatic test generation ? for the future)
+
+        => AUTOMATED REGRESSION TESTING
+
+
+4. SPECIFICATION
+        Firewall btw client and developers
+
+5. Design method: writing spec
+        possible properties:
+            deterministic vs. under-determined specs    -> requirement on the output
+            declarative vs. operational specs
+            new spec is stronger if
+                                    new precondition is weaker      (lest rules)
+                                    new postcondition is stronger   (more rules)
+        GOOD specs:
+            good design idea of a method
+                Precondition strictness  >< cost of checking precondition ( if fail -> throw unchecked EXCEPTION, not allow MUTATION)
+                good signature: static vs. non-static, access controls
+                coherent    -> describe one job -> single responsibility principal
+                use abstract type when possible List, Set ..
+
+            succinct, clear, well-constructed -> easy to read
+
+
+
+
+6. Avoid debugging:
+
+    Avoid debugging:
+
+        static typing (keep thing FINAL, use GENERIC class or interfaces)
+        dynamic checking
+        immutable types and references: final declaration
+
+    Localize bugs
+
+        failing fast:
+            -> throw exception
+            -> assert : method argument and return requirements
+
+        incremental development: test as soon as you finished doing something
+            ->  unit testing            -> find bug in the code you just wrote
+            ->  regression testing      -> find bug in the code you just change
+
+        single responsibility principal
+            -> modularity
+            -> encapsulation with access control (keep things PRIVATE as much as possible)
+
+        scope minimization:
+            -> declare variable when u first need it and place it in the innermost {}
+            -> avoid using global variable
+
+7. Mutability and Immutability
+        mutable vs. immutable reference, object
+
+        immutable: safer from bug, easier to understand, more ready for change, can be more efficient
+
+        Design goal: use immutable reference and immutable object as much as you can
+
+8. Debugging strategy
+
+    I. Reproducing bug from user report as test case
+        -> goal: create small and repeatable test cases that always fail, include it in regression test
+
+    II. Localize the bug
+        1. study the data
+            input
+            stack trace from an exception
+        2. hypothesize
+                break the work in a pipeline, consisting of many modules
+                hypothesize where bug occurs with highest or lowest probability
+        3. probe (gentle observation of the system without disturbing it much, should not insert fixes)
+                use different test case (make observation first)
+                PRINT, ASSERT statements
+                use breakpoint ?
+        4. repeat
+
+    III. Fix the bug
+        coding error or design error
+
+9. Abstract data types
+        IDEAS
+                Abstraction.
+                        Omitting or hiding low-level details with a simpler, higher-level idea.
+                Modularity.
+                        Dividing a system into components or modules, each of which can be designed, implemented, tested, reasoned about, and reused separately from the rest of the system.
+                Encapsulation.
+                        Building walls around a module (a hard shell or capsule) so that the module is responsible for its own internal behavior, and bugs in other parts of the system can't damage its integrity.
+                Information hiding.
+                        Hiding details of a module's implementation from the rest of the system, so that those details can be changed later without changing the rest of the system.
+                Separation of concerns.
+                        Making a feature (or “concern”) the responsibility of a single module, rather than spreading it across multiple modules.
+        ↆ
+        ↆ
+        ↆ
+        DESIGN ADT:
+        ↆ       design abstract value space, which consists of the values that the type is designed to support.
+        ↆ
+        ↆ       design set of operations and their specs
+        ↆ               Operations (what characterize type) classification
+        ↆ                       creator: t* → T         (constructor, factory (static) methods, constant)
+        ↆ                       producer: T+, t* → T    (static, instant method)
+        ↆ                       observer: T+, t* → t    (static, instant method)
+        ↆ                       mutator:    allowed => mutable data type: T+, t* → void | t | T
+        ↆ                                   not allowed => immutable data type
+        ↆ                                   (static, instant method)
+        ↆ               ↆ
+        ↆ               ↆ
+        ↆ               GOOOD operations
+        ↆ                       (few and powerful operations with well-defined purposes and coherent behaviors)
+        ↆ                       (set of operations should provides convenient tool for what clients mostly likely to do)
+        ↆ
+        ↆ
+        ↆ
+        WHY ADT:
+                REPRESENTATION INDEPENDENCE: the use of abstract type is independent of its representation (actual implementation)
+                        Representation: private fields, particular implementation
+                        Ready for change of representation
+                ADT INVARIANTS REPLACE PRECONDITIONS
+                    (when precondition requires parameters to be of certain form)
+
+                    EXAMPLE:
+                        /**
+                         * Find tweets written by a particular user.
+                         *
+                         * @param tweets a list of tweets with distinct timestamps, not modified by this method.
+                         * @param username Twitter username (a nonempty sequence of letters, digits, and underscore)
+                         * @return all and only the tweets in the list whose author is username,
+                         *         in the same order as in the input list.
+                         */
+                        public static List<Tweet> writtenBy(List<Tweet> tweets, String username) { ... }
+
+                            => creating ADT TweetList and Username
+
+                        /**
+                         * Find tweets written by a particular user.
+                         * @return all and only the tweets in the list whose author is username,
+                         *         in the same order as in the input list.
+                         */
+                        public static List<Tweet> writtenBy(TweetList tlist, Username username) { ... }
+        ↆ
+        ↆ
+        ↆ
+        TESTING ADT: test every operations
+        ↆ       test creators, producers, mutators by observers
+        ↆ       test observers by observing on objs created by creators or producers
+        ↆ
+        ↆ
+        ↆ
+        EXAMPLE:
+                        /** MyString represents an immutable sequence of characters. */
+                        public class MyString {
+
+                            //////////////////// Example of a creator operation ///////////////
+                            /** @param b a boolean value
+                             *  @return string representation of b, either "true" or "false" */
+                            public static MyString valueOf(boolean b) { ... }
+
+                            //////////////////// Examples of observer operations ///////////////
+                            /** @return number of characters in this string */
+                            public int length() { ... }
+
+                            /** @param i character position (requires 0 <= i < string length)
+                             *  @return character at position i */
+                            public char charAt(int i) { ... }
+
+                            //////////////////// Example of a producer operation ///////////////
+                            /** Get the substring between start (inclusive) and end (exclusive).
+                             *  @param start starting index
+                             *  @param end ending index.  Requires 0 <= start <= end <= string length.
+                             *  @return string consisting of charAt(start)...charAt(end-1) */
+                            public MyString substring(int start, int end) { ... }
+                        }
+
+10. AF and RI
+
+        IMPLEMENTING ADT:
+                design rep value spaces:
+                        Rep value space consists of the values of the actual implementation entities.
+
+                        choice of both spaces doesn't determine AF and RI => we need to document AF and RI
+
+                        The essential point is that designing an abstract type means not only choosing the two spaces
+                        — the abstract value space for the specification and the rep value space for the implementation —
+                        but also deciding what rep values to use and how to interpret them.
+                ↆ
+                ↆ
+                ↆ
+                design AF and RI
+                        AF (abstraction function): map rep values to the abstract values they represent
+                        RI (rep invariant): describe legal reps
+                                map rep values to a boolean. For a rep value r, RI(r) is true if and only if r is mapped by AF
+                                you can think of RI as a set: the subset of rep values on which AF is defined.
+                ↆ
+                ↆ
+                ↆ
+                ENSURE invariants hold (ensure rep is always legal):
+                        creators and producers must ESTABLISH the invariant for new object instances
+                            ->  checkRep() at the end of method
+                        mutators and observers must PRESERVE the invariant
+                            ->  checkRep() at the end of method
+                        GUARANTEE no rep exposure
+                                choose immutable reps
+                                build immutable from mutable: use IMMUTABLE WRAPPERS (for list, map and set) around mutable data type
+                                prevent exposure of mutating rep by using defensive copying for constructing rep and return rep
+                                    for mutable obj, copy constructor is useful
+                        private checkRep(){
+                                assert "not necessary to check null value for obj";
+                                    // why: preconditions and postconditions of our methods implicitly require that objects and arrays be non-null
+                                    // check for null usually comes free at run times
+                        }
+                ↆ
+                ↆ
+                ↆ
+                DOCUMENTING THE AF, RI, AND SAFETY MEASURE FROM REP EXPOSURE
+                    explicate the meaning of a data type's representation and how it relates to its abstraction.
+                    document strategy to preserve ADT's invariant
+                ↆ
+                REMEMBER:  a good implementation of ADT preserves its own invariants
+        ↆ
+        ↆ
+        ↆ
+        note for IMMUTABLE data type (once created , it always represents the same value):
+            design: abstract values space, producers, creators, observers, but  no mutators
+            implements:
+                ensure immutable rep invariant by:
+                    use private final fields, use unmodifiable wrappers for collection
+                    check that creators and producers established rep invariants
+                    ensure no rep exposures
+        ↆ
+        ↆ
+        ↆ
+        EXAMPLE: documenting
+
+document AF, RI                         // Rep invariant:
+                                        //   author is a Twitter username (a nonempty string of letters, digits, underscores)
+                                        //   text.length <= 140
+implicitly contains non null values     // Abstraction Function:
+                                        //   represents a tweet posted by author, with content text, at time timestamp
+                                        // Safety from rep exposure:
+                                        //   All fields are private;
+                                        //   author and text are Strings, so are guaranteed immutable;
+                                        //   timestamp is a mutable Date, so Tweet() constructor and getTimestamp()
+                                        //        make defensive copies to avoid sharing the rep's Date object with clients.
+
+11. Interface:
+        ADT can be created by
+            single class        example: String
+            interface + class   example: List and ArrayList
+
+12. Equality
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        Java        Python         Object                   Primitive data type
+        ==          is             referential equality     content equality
+        equals()    ==             content equality         NA
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        dynamic type checking: instanceof and getClass()  => should not be used
+
+        Type of equality:
+                behavior equality
+                observation equality
+
+        Equality should be an equivalence relation (reflexive, symmetric, transitive)
+
+        immutable data type (Abstraction function is the basis)
+                behavior never change as immutable
+
+                observation equality:
+                        @override equals() and
+                        @overide hashCode() at the same times for properly usage in hash tables AD
+
+        mutable data type (reference equality as a basis)
+                should be used in hash table ADT with great care: do not mutate the element
+
+                behavioral equality:
+                        two refs are equals if and only if they are alias for the same obj
+                                -> never change equals() and hashCode()
+
+                observational equality:
+                        create a new method e.i isSimilar()

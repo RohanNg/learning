@@ -1,0 +1,64 @@
+algorithms
+WEEK1:
+
+    RUNNING TIME
+        Empirical Analysis: machine dependant
+            + perform experiment : execute program
+            + assume power law, and formulate a hypothesis for running time
+            + make prediction
+
+        Mathematical analysis: machine independant
+            + analyze algo to count frequency of operations
+            + simplify analysis using tilde notation
+
+        Mathematical models for running time:
+            T(N) = xA + yB + zC + ...
+                x,y,z time costs for one operation (array access, integer add, integer compare) depend on machine
+                A = f(N), B = g(N), C = h(N) frequency of certain operation depend on algorithms
+
+                Simplification: useful for large problem (large N)
+                    cost model: use some basic operation that cost most as a proxy for running time (for example: array access operation)
+                    tidle : f(x) ~ g(x) <=> lim(x-> Infinity) f(x)/g(x) = 1
+                        example: 2N3 + 2N2 + 10N + 6 ~ 2x3
+
+        Algorithms classification:
+             order of growth: constant c, logarithmic logN, linear N, linearithmic NlogN, quadratic N2, cubic N3, exponential 2N
+
+        Types of algorithms analysis:
+            Best case       :   lower bound on cost
+            Worst case      :   UPPER BOUND on cost
+            Average case    :   expected cost
+
+        Theory of Algorithms
+            Goal:       Establish difficulty of a problem
+                        Develop optimal algorithm
+
+            Notation        Provides                        Useage
+            Big Theta       Asymtotic order of growth       classify Algorithms                 (algorithms specific)
+            Big Oh          Big theta and smaller           develope UPPER BOUND running times  (algorithms specific)
+            Big Omega       Big Theta and larger            develope LOWER BOUND running times  (problem specific   )
+
+            Optimal algorithms : lower bound = upper bound
+
+            Algorithms design aprroach GIVEN an problem
+                develop a algorithms
+                find UPPER BOUND
+                prove a LOWER BOUND
+                    gap?
+                        lower the upper bound (new algo)
+                        raise the lower bound (difficult math)
+    MEMORY USAGE
+        for     primitive data type
+                reference
+                object
+
+WEEK 2
+    STACK IMPLEMENTATION:
+        Linked-list
+            + every operation take constant time in the worse case
+            + uses extra time and space to dela with the links
+        Resizing-array
+            + every operation takes constant amortized time, in average it's faster than linked-list implementation
+            + save space
+
+    QUEUE IMPLEMETATION:

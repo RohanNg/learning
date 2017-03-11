@@ -1,0 +1,120 @@
+Start
+    git init   || git clone <repo> [new dir]
+
+    git config --global --replace-all user.name "name"
+    git config --global --replace-all user.email "email"
+    git config --global alias.lol "log --oneline --graph --decorate"
+
+Define remote repo shorthand:
+    git REMOTE add origin <repo>
+
+GIT PULL origin master  (always merge into current branch)
+    1. fetches changes from a remote branch (master branch from remote repo)sasd 
+        git FETCH origin
+            git log -p master..origin/master -> inspect differences done in remote repo
+            git log -p master...origin/master -> inspect differences bone in both repo
+    2. merge the fetched branch into current branch
+        git MERGE origin/master
+
+
+        %%%%Undo Change
+
+
+      %%%%% Exploring history
+
+git LOG  (commands that take filenames will optionally allow you to precede any filename by a commit)
+      git log --graph --oneline --decorate --color --all
+    $ git log v2.5..v2.6            # commits between v2.5 and v2.6
+    $ git log v2.5..                # commits since v2.5
+    $ git log --since="2 weeks ago" # commits from the last 2 weeks
+    $ git log -10                   # last 10 commits
+    $ git log v2.5.. Makefile       # commits since v2.5 which modify
+    				# Makefile
+    $ git log branchName master
+      git log master branchName
+      git diff v0.9:filename v2.5:filename
+
+git TAG v0.99 <commit-id>    -> refer with ease
+
+git SHOW (obj: commits, tags, blobs, trees)
+        show commit:
+              git show HEAD^1     -> show the first grand parent of HEAD
+              git show HEAD       -> show tip of the current branch
+              git show branchName -> show tip of the branch
+              git show commit_ID  -> show commit
+        show file:
+              git show v2.5:fileName
+git CHECKOUT
+    HEAD -> refer to the last commit of the current branch
+
+    want to go to older version? revert to previous commit?
+        way 1. git checkout -b branchName v0.99  -> create a branch and switch to that branch
+
+        way 2. git checkout commit_id_or_tag   -> create new anonymous branch, with HEAD at commit_id
+            -> one can make change, which is deleted when checkout to other branch
+            -> if wish to keep change
+                    git checkout -b branchName
+    rename branch:
+        git branch -m newName
+
+    git checkout branchName -> change branch
+
+git DIFF
+
+    git diff v2.5 HEAD
+    git BRANCH branchName v0.99   -> create a branch based at
+     reference
+    git diff commit_id..commit_id file.name
+
+    git reset --hard HEAD^
+    git reset HEAD file_name  -> UNSTAGE FILE
+        -> undo change: git checkout file_name
+      WORKING DIRECTORY    <----+--------+-------+
+          |                 |        |       |
+          |              diff HEAD   |       |
+          V                 |        |       |
+      "git add"             |        |       |
+          |                 |        |     diff
+          |                 |        |       |
+          V                 |        |       |
+       INDEX     <----+-----|--------|-------+
+          |           |     |        |
+          |   diff --cached |        |
+          V           |     |        |
+      "git commit"    |     |        |
+          |           |     |        |
+          |           |     |        |
+          V           |     |        |
+        HEAD     <----+-----+        |
+          |                          |
+          |                       diff HEAD^
+          V                          |
+      previous "git commit"          |
+          |                          |
+          |                          |
+          V                          |
+        HEAD^          <-------------+
+          |
+          |
+          V
+        HEAD^^
+
+
+git mv old_file new_file     (for rename)
+
+git use obj database to represent project's history
+    https://git-scm.com/docs/gittutorial-2
+
+    discover with:  git cat-file -t commit-id
+                    git cat-file <type>
+                    git show obj_id
+                    git ls-tree tree_id
+    "commit" objects refer to "tree" objects representing the snapshot of a directory tree at a particular point in the history, and refer to "parent" commits to show how they’re connected into the project history.
+
+    "tree" objects represent the state of a single directory, associating directory names to "blob" objects containing file data and "tree" objects containing subdirectory information.
+
+    "blob" objects contain file data without any other structure.
+
+    References to commit objects at the head of each branch are stored in files under .git/refs/heads/.
+
+    The name of the current branch is stored in .git/HEAD.

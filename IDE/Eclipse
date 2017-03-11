@@ -1,0 +1,23 @@
+Eclipse
+
+F3 			-> jump to variable/method/class origin
+CTRL D 		-> delete line
+ALT UP/DOWN -> move line
+ALT LEFT/RIGHT -> move in loocation history
+
+Ct Sh O -> import
+Ct Sh T -> open type
+
+Ct 1 	-> quick fix
+
+
+view
+
+	Ct 3 	-> quick access
+	Ct M  	-> max/min view
+	Ct F7 	-> switch view
+	Ct F8	-> switch perspective
+
+indent
+	Ct Sh F -> auto indent
+	Ct I 	-> correct indent for line
